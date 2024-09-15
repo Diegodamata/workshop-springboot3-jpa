@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
 
+import com.diegodev.course.enums.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,7 +23,11 @@ public class Order implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	private Instant date;
+	
+	//formatando da data no padrão iso 8601
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
+	private Instant moment;
+	
 	
 	//como eu defino que a minha classe é uma entidade do banco, como user e order estão associados 
 	@ManyToOne //defino que order e user tem uma assiciação de muitos para um
@@ -30,9 +37,9 @@ public class Order implements Serializable{
 	public Order() {
 	}
 
-	public Order(Integer id, Instant date, User client) {
+	public Order(Integer id, Instant moment, User client) {
 		this.id = id;
-		this.date = date;
+		this.moment = moment;
 		this.client = client;
 	}
 
@@ -45,11 +52,11 @@ public class Order implements Serializable{
 	}
 
 	public Instant getDate() {
-		return date;
+		return moment;
 	}
 
-	public void setDate(Instant date) {
-		this.date = date;
+	public void setDate(Instant moment) {
+		this.moment = moment;
 	}
 
 	public User getClient() {

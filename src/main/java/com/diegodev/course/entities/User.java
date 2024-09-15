@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,7 +30,12 @@ public class User implements Serializable{
 	private String phone;
 	private String password;
 	
-	@OneToMany(mappedBy = "client") //informo eu o meu user é uma relação de um para muitos e informo que ele esta mapeado na classe order pelo atributo client
+	//@JsonIgnoreé útil para evitar problemas de referências circulares e controlar quais dados são retornados.
+	//quando eu transformo esse objeto em json, os outros valores não serão incluidos e vice versa
+    @JsonIgnore //essa anotação faz parte da biblioteca jackson, serve para serialização (quando o objeto é convertido em JSON) ou desserialização (quando JSON é convertido em um objeto Java).
+	
+    //Quando voce tem uma associassão para muitos o jpa não carrega o objeto para muitos, para não estourar a memoria de trafego no computador
+    @OneToMany(mappedBy = "client") //informo eu o meu user é uma relação de um para muitos e informo que ele esta mapeado na classe order pelo atributo client
 	private List<Order> orders = new ArrayList<>();
 	
 	//como estou usando fremeword sou obrigado a usar o constructor vazio
