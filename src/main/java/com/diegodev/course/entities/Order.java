@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
 
-import com.diegodev.course.enums.OrderStatus;
+import com.diegodev.course.entities.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Entity;
@@ -28,6 +28,8 @@ public class Order implements Serializable{
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
 	private Instant moment;
 	
+	//o tipo enum agora interno ele é do tipo inteiro
+	private Integer orderStatus;
 	
 	//como eu defino que a minha classe é uma entidade do banco, como user e order estão associados 
 	@ManyToOne //defino que order e user tem uma assiciação de muitos para um
@@ -37,9 +39,10 @@ public class Order implements Serializable{
 	public Order() {
 	}
 
-	public Order(Integer id, Instant moment, User client) {
+	public Order(Integer id, Instant moment, OrderStatus orderStatus, User client) {
 		this.id = id;
 		this.moment = moment;
+		setOrderStatus(orderStatus);
 		this.client = client;
 	}
 
@@ -58,7 +61,17 @@ public class Order implements Serializable{
 	public void setDate(Instant moment) {
 		this.moment = moment;
 	}
+	
+	public OrderStatus getOrderStatus() {
+		return OrderStatus.valueOf(orderStatus);
+	}
 
+	public void setOrderStatus(OrderStatus orderStatus) {
+		if (orderStatus != null) {
+			this.orderStatus = orderStatus.getCode();
+		}
+	}
+		
 	public User getClient() {
 		return client;
 	}
