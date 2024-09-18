@@ -6,11 +6,14 @@ import java.util.Objects;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "tb_product")
@@ -25,7 +28,14 @@ public class Product implements Serializable{
 	private Double price;
 	private String imgUrl;
 	
-	@Transient
+	//assiciassão muitos para muitos, no banco isso não é possivel, então escolho qualquer uma das classe para fazer essa operação
+	@ManyToMany(fetch = FetchType.EAGER) //define como as assiciações devem ser feitas no banco, indica que todos os dados associados a essa tabela 
+	//devem ser carregadas imediatamente de forma automatica, assim não tendo o erro, de lazy loading carregamento tardio
+	//EAGER JPA irá buscar as entidades associadas no mesmo momento.
+	//quando temos associassão muitos para muitos precisamos criar uma nova tabela 
+	//crio uma nova tabela defino um nome, com o joinColumns, eu informo que essa tabela ira conter a chave estrangeira da tabela produto 
+	@JoinTable(name = "tb_product_category", joinColumns = @JoinColumn(name = "product_id"), 
+	inverseJoinColumns = @JoinColumn(name = "category_id")) //e faço o inverso, para que essa tabela tambem contenha a chave estrangeira da tabela category
 	private Set<Category> categories = new HashSet<>();
 	
 	public Product() {

@@ -5,15 +5,17 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 
 @Entity
-@Table(name = "tb_categoty")
+@Table(name = "tb_category")
 public class Category implements Serializable{
 	private static final long serialVersionUID = 1L;
 
@@ -22,7 +24,10 @@ public class Category implements Serializable{
 	private Long id;
 	private String name;
 	
-	@Transient
+	@JsonIgnore
+	//eu não preciso fazer nessa classea mesma coisa que foi feito na classe category
+	//apenas informo que é uma associassão muitos para muitos e passo o nome da coleção(Set) que contem na outra classe (Product)
+	@ManyToMany(mappedBy = "categories")
 	private Set<Product> products = new HashSet<>();
 	
 	public Category() {
