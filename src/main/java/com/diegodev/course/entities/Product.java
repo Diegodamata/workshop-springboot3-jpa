@@ -99,7 +99,9 @@ public class Product implements Serializable{
 		return categories;
 	}
 	
-	//o meu produto rpecisa apenas buscar o pedido associado a ele
+	//o meu produto precisa apenas buscar o pedido associado a ele
+	//então eu crio um metodo get para a minha coleção set 
+	//dessa forma o meu produto com id do OrderItem com o id do Order
 	@JsonIgnore
 	public Set<Order> getOrders(){
 		Set<Order> set = new HashSet<>();

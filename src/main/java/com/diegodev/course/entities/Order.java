@@ -9,6 +9,7 @@ import java.util.Set;
 import com.diegodev.course.entities.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -17,6 +18,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -26,7 +28,7 @@ public class Order implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 	
 	//formatando da data no padrão iso 8601
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
@@ -44,21 +46,29 @@ public class Order implements Serializable{
 	@OneToMany(mappedBy = "id.order", fetch = FetchType.EAGER)
 	private Set<OrderItem> items = new HashSet<>();
 	
+	//um Order não precisa obrigatoriamente ter um payment
+	//a classe order é a classe independente ou principal
+	//digo q esse atributo esta mapeado pelo atributo order da classe payment
+	@OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+	//mapeando as duas entidades para ter o mesmo id, se o pedido ter o codigo 5 o pagamento desse pedido tambem deve ser o codigo 5
+	//o cascading permite que as operações realizadas na entidade "pai" sejam automaticamente aplicadas às entidades "filhas" ou relacionadas.
+	private Payment payment;
+	
 	public Order() {
 	}
 
-	public Order(Integer id, Instant moment, OrderStatus orderStatus, User client) {
+	public Order(Long id, Instant moment, OrderStatus orderStatus, User client) {
 		this.id = id;
 		this.moment = moment;
 		setOrderStatus(orderStatus);
 		this.client = client;
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -92,6 +102,14 @@ public class Order implements Serializable{
 		return items;
 	}
 	
+	public Payment getPayment() {
+		return payment;
+	}
+
+	public void setPayment(Payment payment) {
+		this.payment = payment;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);

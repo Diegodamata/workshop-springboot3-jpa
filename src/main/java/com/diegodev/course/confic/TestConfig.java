@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Profile;
 import com.diegodev.course.entities.Category;
 import com.diegodev.course.entities.Order;
 import com.diegodev.course.entities.OrderItem;
+import com.diegodev.course.entities.Payment;
 import com.diegodev.course.entities.Product;
 import com.diegodev.course.entities.User;
 import com.diegodev.course.entities.enums.OrderStatus;
@@ -84,5 +85,14 @@ public class TestConfig implements CommandLineRunner{ //A interface CommandLineR
 		OrderItem oi4 = new OrderItem(o3, p5, 2, p5.getPrice());
 		
 		orderItemRepositoty.saveAll(Arrays.asList(oi1, oi2, oi3, oi4));
+		
+		//colocando um pagamento para o pedido o1
+		Payment pay1 = new Payment(null, Instant.parse("2019-06-20T21:53:07Z"), o1);
+		//para salvar o objeto dependente não precisa criar um repository para ele 
+		//crio uma assiciação de mão dupla qunado quando as duas entidade relacionadas e cada uma mantém uma referência para a outra
+		//apenas chama o pedido e passo o pagamento desse pedido, associando os dois, assim o pedido conhece o pagamento, e o pagamento conhece o pedido
+		o1.setPayment(pay1);
+		
+		orderRepository.save(o1); //apos assicionar o pagamento ao pedido eu salvo novamente o pedido
 	}
 }
