@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.diegodev.course.entities.User;
 import com.diegodev.course.repositories.UserRepository;
+import com.diegodev.course.services.exception.ResourceNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -33,8 +34,10 @@ public class UserServices {
 		//optional lida com valores que podem ou não estar presentes evitando o uso de null, e evitando o risco de exeções
 		Optional<User> obj = repository.findById(id);
 		
-		
-		return obj.get(); //operação get ira retornar o obj user que esta dentro do optional
+		//em vez de chamar apenas o objeto get() para retornar o conteudo de Optional e se tiver vazio não retorna nada
+		//orElseThrow é igual o metodo get porem ele trata uma exception se não conter nenhum conteudo no optional
+		//recebe uma finção anonima chamando a minha exception personalizada, e passo o id que o usuario pediu para filtrar
+		return obj.orElseThrow(() -> new ResourceNotFoundException(id)); 
 	}
 	
 	
