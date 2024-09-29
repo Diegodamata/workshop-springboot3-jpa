@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.diegodev.course.services.exception.DatabaseException;
 import com.diegodev.course.services.exception.ResourceNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +25,16 @@ public class ResourceExceptionHandler {
 																													//como a URL da requisição e outras informações pertinentes.
 		String error = "Resource not found";
 		HttpStatus status = HttpStatus.NOT_FOUND; //definindo o codigo http para retorn no caso o codigo 404, q significa que não foi encontrado
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());//request.getRequestURI(): A URI que foi requisitada no momento em que o erro ocorreu, para facilitar o rastreamento.
+		return ResponseEntity.status(status).body(err);
+	}
+	
+	//tratando exception para violação de integridade
+	@ExceptionHandler(DatabaseException.class) 
+	public ResponseEntity<StandardError> resourceNotFound(DatabaseException e, HttpServletRequest request){ //HttpServletRequest request: Esse parâmetro contém detalhes sobre a requisição HTTP que causou a exceção, 
+																													//como a URL da requisição e outras informações pertinentes.
+		String error = "Database erro";
+		HttpStatus status = HttpStatus.BAD_REQUEST; //definindo o codigo http para retorn no caso o codigo 404, q significa que não foi encontrado
 		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());//request.getRequestURI(): A URI que foi requisitada no momento em que o erro ocorreu, para facilitar o rastreamento.
 		return ResponseEntity.status(status).body(err);
 	}

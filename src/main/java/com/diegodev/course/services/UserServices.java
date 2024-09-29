@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.diegodev.course.entities.User;
 import com.diegodev.course.repositories.UserRepository;
+import com.diegodev.course.services.exception.DatabaseException;
 import com.diegodev.course.services.exception.ResourceNotFoundException;
 
 import jakarta.transaction.Transactional;
@@ -47,7 +50,13 @@ public class UserServices {
 	}
 	
 	public void delete(Long id) {
-		repository.deleteById(id);
+		try {
+			repository.deleteById(id);
+		} catch (EmptyResultDataAccessException e) { //exception de dados não encontrado ou vazio
+			throw new ResourceNotFoundException(id); //chamo a minha exception personalizada
+		} catch( DataIntegrityViolationException e) { //exception de violação de dados, quando eu tento excluir um usuario q tem outras entidades associado a ele
+			throw new DatabaseException(e.getMessage());
+		}
 	}
 	
 	@Transactional //precisei colocar essa anotação pois estava dando um lazy loading, então informei que essa minha operação estara
