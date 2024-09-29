@@ -40,4 +40,8 @@ public class UserServices {
 	public User insert(User obj) {
 		return repository.save(obj); //esse metodo por padrão ja retorna o objeto criado
 	}
+	
+	public void delete(Long id) {
+		repository.deleteById(id);
+	}
 }

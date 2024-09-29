@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,7 +73,19 @@ public class UserResource {
 		//toUri() Converte o objeto UriComponents em uma instância de URI, que será usada no cabeçalho Location.
 		
 		return ResponseEntity.created(uri).body(user);
-		//created() ele recebe uma uri, é utilizado para retornar uma resposta HTTP com o código de status 201 Created, 
+		//created() ele recebe uma uri que é um Location o caminho para criar um usuario ,
+		//é utilizado para retornar uma resposta HTTP com o código de status 201 Created, 
 		//indicando que uma nova entidade foi criada com sucesso no servidor.
+	}
+	
+	//classe para deletar um usuario com passe no id
+	//porem eu não posso deletar um usuario que tenha pedido associado a ele, pois compromete a integridade fisica do meu banco
+	//ira dar um erro de ConstraintViolationException 
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<Void> delete(@PathVariable Long id){
+		
+		service.delete(id);
+		
+		return ResponseEntity.noContent().build();
 	}
 }
