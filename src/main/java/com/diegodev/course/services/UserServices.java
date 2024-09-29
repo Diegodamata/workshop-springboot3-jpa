@@ -13,6 +13,7 @@ import com.diegodev.course.repositories.UserRepository;
 import com.diegodev.course.services.exception.DatabaseException;
 import com.diegodev.course.services.exception.ResourceNotFoundException;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 //@Component //registrando como componente, e ele agora vai poder ser injetado automaticamento em outras classes atraves do Autowired
@@ -59,16 +60,22 @@ public class UserServices {
 		}
 	}
 	
+	//para tratar exception de update apenas preciso verificar se o id do usuario existe ou não
+	
 	@Transactional //precisei colocar essa anotação pois estava dando um lazy loading, então informei que essa minha operação estara
 	//dentro de uma transação dessa forma é garantido que todas as alterações sejam feitas em uma transação e tendo sucesso 
 	//metodo para atualizar um usuario, preciso do id do usuario e o User responsavel por esse id
 	public User update(Long id, User obj) {
+		try {
 		//o findById ele me tras do banco o usuario com base no id, ja o getReferenceById ele prepara o objeto para uma alteração
 		User entity = repository.getReferenceById(id);
 		
 		updateData(entity, obj);
 		
 		return repository.save(entity);
+		} catch(EntityNotFoundException e) {
+			throw new ResourceNotFoundException(id);
+		}
 	}
 	
 	public void updateData(User entity, User obj) {
