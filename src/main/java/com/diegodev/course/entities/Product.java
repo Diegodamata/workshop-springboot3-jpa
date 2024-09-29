@@ -99,14 +99,16 @@ public class Product implements Serializable{
 		return categories;
 	}
 	
-	//o meu produto precisa apenas buscar o pedido associado a ele
-	//então eu crio um metodo get para a minha coleção set 
-	//dessa forma o meu produto com id do OrderItem com o id do Order
+	
+	//Não faz sentido eu buscar um produto e vir os items que esse produto pertence, eu preciso apenas buscar o pedido desse produto
+	//então o meu getOrders, ira percorrer os items de pedido que o produto pertence, e trazer apenas o pedido desse produto
+	//para isso preciso percorrer o meus items e adicionar em uma coleção de pedido e retornala
 	@JsonIgnore
+	//dessa forma não ira trazer os pedidos associados ao produto
 	public Set<Order> getOrders(){
 		Set<Order> set = new HashSet<>();
 		for (OrderItem x : items) {
-			set.add(x.getOrder());
+			set.add(x.getOrder()); //percorro os meus items de pedido e pego o pedido associado ao items de pedido
 		}
 		return set;
 	}

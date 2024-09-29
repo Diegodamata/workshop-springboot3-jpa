@@ -34,4 +34,10 @@ public class UserServices {
 		
 		return obj.get(); //operação get ira retornar o obj user que esta dentro do optional
 	}
+	
+	
+	//metodo para inserir um novo objeto do tipo User
+	public User insert(User obj) {
+		return repository.save(obj); //esse metodo por padrão ja retorna o objeto criado
+	}
 }

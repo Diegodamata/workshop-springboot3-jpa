@@ -34,6 +34,9 @@ public class Payment implements Serializable{
 	@OneToOne
 	@MapsId //o @MapsId ajuda a garantir que as duas entidades usem a mesma chave primária, 
 	//eliminando a necessidade de definir uma chave primária separada na entidade dependente
+	
+	//Quando uma entidade dependente (filha) usa a chave primária de outra entidade (pai) como sua própria chave primária.
+	//dessa forma quando o pedido 3 esta associado com o pagamento 3
 	private Order order;
 	
 	public Payment() {

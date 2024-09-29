@@ -43,6 +43,9 @@ public class Order implements Serializable{
 	private User client;
 	
 	
+	//essa associação ja esta sendo utilizada, na classe OrderItemPk la contem essa associação
+	//aqui na minha classe apenas informe onde esta sendo feita essa associação
+	//digo que é na classe OrderItem no id, que contem a chave primaria de order e product
 	@OneToMany(mappedBy = "id.order", fetch = FetchType.EAGER)
 	private Set<OrderItem> items = new HashSet<>();
 	

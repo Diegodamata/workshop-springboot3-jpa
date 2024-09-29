@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 public class OrderItem implements Serializable{
 	private static final long serialVersionUID = 1L;
 
+	//como em lugar nenhum essa classe foi instanciada, precisei instanciar, no atributo, senão comecara valendo null
 	@EmbeddedId //anotação que define no banco que é o id da chave primaria composta
 	private OrderItemPK id = new OrderItemPK(); //precisa ser instanciado se não vai lançar uma exception nullpointerexception
 	
@@ -31,6 +32,9 @@ public class OrderItem implements Serializable{
 		this.price = price;
 	}
 	
+	//para não dar uma referencia cicrica, quando acontece um loop, e uma dependencia chama a outra
+	//com na minha classe OrderItem não contem o atributo order para cortar essa referencia
+	//no java EE é utilizado o metodo get para cortar essa referencia
 	@JsonIgnore
 	public Order getOrder() {
 		return id.getOrder();
@@ -40,6 +44,9 @@ public class OrderItem implements Serializable{
 		id.setOrder(order);
 	}
 	
+	//dessa forma ira trazer o produto e os pedidos associados a ele, porem dessa forma não é correta
+	//quando buscar os produtos eu simplesmente so que os produtos
+	//@JsonIgnore
 	public Product getProduct() {
 		return id.getProduct();
 	}
@@ -66,7 +73,7 @@ public class OrderItem implements Serializable{
 	
 	public Double getSubTotal() {
 		return price * quantity;
-	}
+	}	
 
 	@Override
 	public int hashCode() {
